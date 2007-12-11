@@ -2,7 +2,7 @@
 
 Name:    argyllcms
 Version: 0.70
-Release: %mkrel 0.%{alphaversion}.2
+Release: %mkrel 0.1.%{alphaversion}.2
 Summary: ICC compatible color management system
 
 Group:     Graphics
