@@ -1,15 +1,16 @@
 %define alphaversion Beta7
-%define alphatag    .%{alphaversion}
 
 Name:    argyllcms
 Version: 0.70
-Release: %mkrel 0.1%{alphatag}
+Release: %mkrel 0.%{alphaversion}.2
 Summary: ICC compatible color management system
 
 Group:     Graphics
 License:   GPLv3
 URL:       http://www.argyllcms.com/
 Source0:   http://www.argyllcms.com/argyllV%{version}%{alphaversion}_src.zip
+# unbind Huey from HID driver
+Source1:   96-Argyll.rules
 Patch0:    %{name}-0.70-build.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
@@ -56,6 +57,10 @@ sh ./makeinstall.ksh
 mv %{buildroot}%{_prefix}/ref %{buildroot}%{_datadir}/argyllcms
 chmod 755 %{buildroot}%{_bindir}/*
 
+mv %{buildroot}%{_bindir}/icclink  %{buildroot}%{_bindir}/argyll-icclink
+
+mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
+install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/udev/rules.d
 # remove unpackaged files
 rm -f $RPM_BUILD_ROOT%{_bindir}/*.txt
 
@@ -65,5 +70,6 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %doc doc/ *.txt
+%config(noreplace) %{_sysconfdir}/udev/rules.d/96-Argyll.rules
 %{_bindir}/*
 %{_datadir}/argyllcms
