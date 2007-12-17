@@ -2,24 +2,24 @@
 
 Name:    argyllcms
 Version: 0.70
-Release: %mkrel 0.1.%{alphaversion}.3
+Release: %mkrel 0.1.%{alphaversion}.4
 Summary: ICC compatible color management system
 
 Group:     Graphics
 License:   GPLv3 and BSD-like
 URL:       http://www.argyllcms.com/
 Source0:   http://www.argyllcms.com/argyllV%{version}%{alphaversion}_src.zip
-# unbind Huey from HID driver
-Source1:   96-Argyll.rules
 # add ACL for colorimeter devices (Nicolas Mailhot)
-Source2:   argyllcms-0.70-10-color.fdi
+Source2:   argyllcms-0.70-19-color.fdi
 Source3:   argyllcms-device-file.policy
 # (fc) 0.70-0.1.beta7.1mdv fix build to use system libtiff and libusb and link with -lm
-Patch0:    %{name}-0.70-build.patch
+Patch0:  argyllcms-0.70-build.patch
 # (Daniel Berrange, Fedora) 0.70-0.1.beta7.3mdv fix buffer overflow in dispread
-Patch1:  %{name}-0.70-dispread-buffer-overflow.patch
+Patch1:  argyllcms-0.70-dispread-buffer-overflow.patch
 # (Daniel Berrange, Fedora) 0.70-0.1.beta7.3mdv fix buffer overflow in iccdump
-Patch2:  %{name}-0.70-iccdump-buffer-overflow.patch
+Patch2:  argyllcms-0.70-iccdump-buffer-overflow.patch
+# (fc) 0.70-0.1.beta7.4mdv fix usb unbinding (Graeme Gill)
+Patch3:  argyllcms-0.70-unbind-device.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
 BuildRequires: jam, libtiff-devel, libusb-devel
@@ -49,6 +49,7 @@ rm -fr tiff libusb libusbw
 %patch0 -p1 -b .build
 %patch1 -p1 -b .dispread-buffer-overflow
 %patch2 -p1 -b .iccdump-buffer-overflow
+%patch3 -p1 -b .unbind-device
 
 %build
 CCOPTFLAG=`echo %{optflags} | sed -e 's/-Wp,-D_FORTIFY_SOURCE=2/-Wp,-D_FORTIFY_SOURCE=1/g'`
@@ -71,13 +72,9 @@ chmod 755 %{buildroot}%{_bindir}/*
 # fix conflict with lcms version
 mv %{buildroot}%{_bindir}/icclink  %{buildroot}%{_bindir}/icclink-%{name}
 
-mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
-install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/udev/rules.d
-
-
 install -d -m 0755 %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor
 install -p -m 0644 %{SOURCE2} \
-        %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/10-color.fdi
+        %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/19-color.fdi
 
 mkdir -p %{buildroot}%{_datadir}/PolicyKit/policy
 install -m 644 %{SOURCE3} %{buildroot}%{_datadir}/PolicyKit/policy
@@ -91,8 +88,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %doc doc/*.html doc/*.jpg *.txt
-%config(noreplace) %{_sysconfdir}/udev/rules.d/96-Argyll.rules
 %{_bindir}/*
 %{_datadir}/argyllcms
-%{_datadir}/hal/fdi/policy/10osvendor/10-color.fdi
+%{_datadir}/hal/fdi/policy/10osvendor/19-color.fdi
 %{_datadir}/PolicyKit/policy/argyllcms-device-file.policy
