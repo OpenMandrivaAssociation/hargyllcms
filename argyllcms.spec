@@ -20,6 +20,7 @@ Patch1:  argyllcms-0.70-dispread-buffer-overflow.patch
 Patch2:  argyllcms-0.70-iccdump-buffer-overflow.patch
 # (fc) 0.70-0.1.beta7.4mdv fix usb unbinding (Graeme Gill)
 Patch3:  argyllcms-0.70-unbind-device.patch
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
 BuildRequires: jam, libtiff-devel, libusb-devel
 BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
