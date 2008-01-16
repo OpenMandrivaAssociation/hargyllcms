@@ -1,8 +1,8 @@
-%define alphaversion Beta7
+%define alphaversion Beta8
 
 Name:    argyllcms
 Version: 0.70
-Release: %mkrel 0.1.%{alphaversion}.4
+Release: %mkrel 0.1.%{alphaversion}.1
 Summary: ICC compatible color management system
 
 Group:     Graphics
@@ -14,12 +14,6 @@ Source2:   argyllcms-0.70-19-color.fdi
 Source3:   argyllcms-device-file.policy
 # (fc) 0.70-0.1.beta7.1mdv fix build to use system libtiff and libusb and link with -lm
 Patch0:  argyllcms-0.70-build.patch
-# (Daniel Berrange, Fedora) 0.70-0.1.beta7.3mdv fix buffer overflow in dispread
-Patch1:  argyllcms-0.70-dispread-buffer-overflow.patch
-# (Daniel Berrange, Fedora) 0.70-0.1.beta7.3mdv fix buffer overflow in iccdump
-Patch2:  argyllcms-0.70-iccdump-buffer-overflow.patch
-# (fc) 0.70-0.1.beta7.4mdv fix usb unbinding (Graeme Gill)
-Patch3:  argyllcms-0.70-unbind-device.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
 BuildRequires: jam, libtiff-devel, libusb-devel
@@ -47,9 +41,6 @@ viewer.
 rm -fr tiff libusb libusbw
 
 %patch0 -p1 -b .build
-%patch1 -p1 -b .dispread-buffer-overflow
-%patch2 -p1 -b .iccdump-buffer-overflow
-%patch3 -p1 -b .unbind-device
 
 %build
 CCOPTFLAG=`echo %{optflags} | sed -e 's/-Wp,-D_FORTIFY_SOURCE=2/-Wp,-D_FORTIFY_SOURCE=1/g'`
