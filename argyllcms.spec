@@ -19,6 +19,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 BuildRequires: jam, libtiff-devel, libusb-devel
 BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
 BuildRequires: libxscrnsaver-devel
+BuildRequires: libxrandr-devel
 
 %description
 The Argyll color management system supports accurate ICC profile creation for
