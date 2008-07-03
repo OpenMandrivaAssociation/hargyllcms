@@ -1,19 +1,19 @@
-%define alphaversion Beta8
-
 Name:    argyllcms
-Version: 0.70
-Release: %mkrel 0.1.%{alphaversion}.1
+Version: 1.0.0
+Release: %mkrel 1
 Summary: ICC compatible color management system
 
 Group:     Graphics
 License:   GPLv3 and BSD-like
 URL:       http://www.argyllcms.com/
-Source0:   http://www.argyllcms.com/argyllV%{version}%{alphaversion}_src.zip
+Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
 # add ACL for colorimeter devices (Nicolas Mailhot)
 Source2:   argyllcms-0.70-19-color.fdi
 Source3:   argyllcms-device-file.policy
-# (fc) 0.70-0.1.beta7.1mdv fix build to use system libtiff and libusb and link with -lm
-Patch0:  argyllcms-0.70-build.patch
+# (fc) 0.70-0.1.beta7.1mdv fix build to use system libusb 
+Patch0:  argyllcms-1.0.0-libusb.patch
+# (fc) 1.0.0-1mdv various upstream fixes
+Patch1:	 argyllcms-1.0.0-variousfixes.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
 BuildRequires: jam, libtiff-devel, libusb-devel
@@ -36,39 +36,34 @@ conversion. Device color gamuts can also be viewed and compared using a VRML
 viewer.
 
 %prep
-%setup -q -c
-# Remove useless bundled libs to make sure we don't accidentally include them
-rm -fr tiff libusb libusbw
+%setup -q -n Argyll_V%{version}
+%patch0 -p1 -b .libusb
+%patch1 -p1 -b .variousfixes
 
-%patch0 -p1 -b .build
 
 %build
-CCOPTFLAG=`echo %{optflags} | sed -e 's/-Wp,-D_FORTIFY_SOURCE=2/-Wp,-D_FORTIFY_SOURCE=1/g'`
+CCOPTFLAG="%{optflags}"
 NUMBER_OF_PROCESSORS="$RPM_N_CPUS"
-export CCOPTFLAG RPM_N_CPUS
+export CCOPTFLAG NUMBER_OF_PROCESSORS
 
-sh ./makeall.ksh
+sh ./makeall.sh
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}%{_prefix} %{buildroot}%{_datadir}
-export DOTDOT=%{buildroot}%{_prefix}
+mkdir -p %{buildroot}%{_datadir}/argyllcms
 
-sh ./makeinstall.ksh 
+sh ./makeinstall.sh 
 
-mv %{buildroot}%{_prefix}/ref %{buildroot}%{_datadir}/argyllcms
-mv %{buildroot}%{_bindir}/*.gam %{buildroot}%{_datadir}/argyllcms
-chmod 755 %{buildroot}%{_bindir}/*
-
-# fix conflict with lcms version
-mv %{buildroot}%{_bindir}/icclink  %{buildroot}%{_bindir}/icclink-%{name}
+mv bin %{buildroot}%{_prefix}
+chmod 755  %{buildroot}%{_bindir}/*
+cp ref/* %{buildroot}%{_datadir}/argyllcms
 
 install -d -m 0755 %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor
-install -p -m 0644 %{SOURCE2} \
-        %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/19-color.fdi
+install -p -m 0644 libusb/19-color.fdi \
+        %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/
 
-mkdir -p %{buildroot}%{_datadir}/PolicyKit/policy
-install -m 644 %{SOURCE3} %{buildroot}%{_datadir}/PolicyKit/policy
+install -d -m 0755 %{buildroot}%{_datadir}/PolicyKit/policy
+install -m 644 libusb/color-device-file.policy %{buildroot}%{_datadir}/PolicyKit/policy
 
 # remove unpackaged files
 rm -f $RPM_BUILD_ROOT%{_bindir}/*.txt
@@ -82,4 +77,4 @@ rm -rf %{buildroot}
 %{_bindir}/*
 %{_datadir}/argyllcms
 %{_datadir}/hal/fdi/policy/10osvendor/19-color.fdi
-%{_datadir}/PolicyKit/policy/argyllcms-device-file.policy
+%{_datadir}/PolicyKit/policy/color-device-file.policy
