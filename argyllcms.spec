@@ -1,5 +1,5 @@
 Name:    argyllcms
-Version: 1.0.0
+Version: 1.0.1
 Release: %mkrel 1
 Summary: ICC compatible color management system
 
@@ -7,16 +7,18 @@ Group:     Graphics
 License:   GPLv3 and BSD-like
 URL:       http://www.argyllcms.com/
 Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
-# add ACL for colorimeter devices (Nicolas Mailhot)
-Source2:   argyllcms-0.70-19-color.fdi
-Source3:   argyllcms-device-file.policy
-# (fc) 0.70-0.1.beta7.1mdv fix build to use system libusb 
-Patch0:  argyllcms-1.0.0-libusb.patch
-# (fc) 1.0.0-1mdv various upstream fixes
-Patch1:	 argyllcms-1.0.0-variousfixes.patch
+# (fc) 1.0.1-1mdv change build system to use autotools (and build with system libusb) (Alastair M. Robinson)
+Patch0:  http://www.blackfiveservices.co.uk/Argyll_V1.0.1_autotools.patch
+# (fc) 1.0.0-1mdv remove call to additional internal libusb api, not needed
+Patch1:  argyllcms-1.0.0-libusb.patch
+# (fc) 1.0.1-1mdv double free fix (Fedora bug #421921) (Fedora)
+Patch2:  argyllcms-1.0.1-printf.patch
+# (fc) 1.0.1-1mdv various upstream fixes
+Patch3:  http://www.argyllcms.com/V1.0.1_patches.txt
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
-BuildRequires: jam, libtiff-devel, libusb-devel
+BuildRequires: libtiff-devel, libusb-devel
 BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
 BuildRequires: libxscrnsaver-devel
 BuildRequires: libxrandr-devel
@@ -38,26 +40,26 @@ viewer.
 
 %prep
 %setup -q -n Argyll_V%{version}
-%patch0 -p1 -b .libusb
-%patch1 -p1 -b .variousfixes
+%patch0 -p1 -b .autotools
+%patch1 -p1 -b .libusb
+%patch2 -p1 -b .printf
+%patch3 -p1 -b .upstreamfixes
+
+#needed by patch0
+autoreconf -i
 
 
 %build
-CCOPTFLAG="%{optflags}"
-NUMBER_OF_PROCESSORS="$RPM_N_CPUS"
-export CCOPTFLAG NUMBER_OF_PROCESSORS
 
-sh ./makeall.sh
+%configure2_5x
+
+#parallel build is broken
+make
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}%{_datadir}/argyllcms
 
-sh ./makeinstall.sh 
-
-mv bin %{buildroot}%{_prefix}
-chmod 755  %{buildroot}%{_bindir}/*
-cp ref/* %{buildroot}%{_datadir}/argyllcms
+%makeinstall_std
 
 install -d -m 0755 %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor
 install -p -m 0644 libusb/19-color.fdi \
@@ -66,16 +68,13 @@ install -p -m 0644 libusb/19-color.fdi \
 install -d -m 0755 %{buildroot}%{_datadir}/PolicyKit/policy
 install -m 644 libusb/color-device-file.policy %{buildroot}%{_datadir}/PolicyKit/policy
 
-# remove unpackaged files
-rm -f $RPM_BUILD_ROOT%{_bindir}/*.txt
-
 %clean
 rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc doc/*.html doc/*.jpg *.txt
+%doc %{_datadir}/doc/argyll
 %{_bindir}/*
-%{_datadir}/argyllcms
+%{_datadir}/color/argyll
 %{_datadir}/hal/fdi/policy/10osvendor/19-color.fdi
 %{_datadir}/PolicyKit/policy/color-device-file.policy
