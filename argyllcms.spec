@@ -1,5 +1,5 @@
 Name:    argyllcms
-Version: 1.0.1
+Version: 1.0.2
 Release: %mkrel 1
 Summary: ICC compatible color management system
 
@@ -11,10 +11,6 @@ Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
 Patch0:  http://www.blackfiveservices.co.uk/Argyll_V1.0.1_autotools.patch
 # (fc) 1.0.0-1mdv remove call to additional internal libusb api, not needed
 Patch1:  argyllcms-1.0.0-libusb.patch
-# (fc) 1.0.1-1mdv double free fix (Fedora bug #421921) (Fedora)
-Patch2:  argyllcms-1.0.1-printf.patch
-# (fc) 1.0.1-1mdv various upstream fixes
-Patch3:  http://www.argyllcms.com/V1.0.1_patches.txt
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
@@ -42,8 +38,6 @@ viewer.
 %setup -q -n Argyll_V%{version}
 %patch0 -p1 -b .autotools
 %patch1 -p1 -b .libusb
-%patch2 -p1 -b .printf
-%patch3 -p1 -b .upstreamfixes
 
 #needed by patch0
 autoreconf -i
