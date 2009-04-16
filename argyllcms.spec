@@ -1,6 +1,6 @@
 Name:    argyllcms
 Version: 1.0.3
-Release: %mkrel 1
+Release: %mkrel 2
 Summary: ICC compatible color management system
 
 Group:     Graphics
@@ -8,9 +8,15 @@ License:   GPLv3 and BSD-like
 URL:       http://www.argyllcms.com/
 Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
 # (fc) 1.0.1-1mdv change build system to use autotools (and build with system libusb) (Alastair M. Robinson)
-Patch0:  http://www.blackfiveservices.co.uk/Argyll_V1.0.1_autotools.patch
+Patch0:  http://www.blackfiveservices.co.uk/Argyll_V1.0.3_autotools.patch
 # (fc) 1.0.0-1mdv remove call to additional internal libusb api, not needed
 Patch1:  argyllcms-1.0.0-libusb.patch
+# (fc) 1.0.3-2mdv CVE-2009-0583,0584 (Fedora)
+Patch2:  argyllcms-CVE-2009-0583,0584.patch
+# (fc) 1.0.3-2mdv CVE-2009-0792
+Patch3:  argyllcms-CVE-2009-0792.patch
+# (fc) 1.0.3-2mdv fix header and str_fmt error
+Patch4:  argyllcms-1.0.3-header-str_fmt.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
@@ -38,10 +44,12 @@ viewer.
 %setup -q -n Argyll_V%{version}
 %patch0 -p1 -b .autotools
 %patch1 -p1 -b .libusb
+%patch2 -p1 -b .CVE-2009-0583
+%patch3 -p1 -b .CVE-2009-0792
+%patch4 -p1 -b .header-str_fmt
 
 #needed by patch0
 autoreconf -i
-
 
 %build
 
@@ -49,6 +57,9 @@ autoreconf -i
 
 #parallel build is broken
 make
+
+%check
+make check
 
 %install
 rm -rf %{buildroot}
