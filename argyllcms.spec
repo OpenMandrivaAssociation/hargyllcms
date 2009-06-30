@@ -1,14 +1,14 @@
 Name:    argyllcms
-Version: 1.0.3
-Release: %mkrel 3
+Version: 1.0.4
+Release: %mkrel 1
 Summary: ICC compatible color management system
 
 Group:     Graphics
 License:   GPLv3 and BSD-like
 URL:       http://www.argyllcms.com/
 Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
-# (fc) 1.0.1-1mdv change build system to use autotools , build with system libusb and icclib and sync icclib to with latest release (Alastair M. Robinson, Roland Mas) (Debian)
-Patch0:    Argyll_V1.0.3_autotools.patch
+# (fc) 1.0.1-1mdv change build system to use autotools , build with system libusb and icclib (Alastair M. Robinson, Roland Mas) (Debian)
+Patch0:    Argyll_V1.0.4_autotools.patch
 # (fc) 1.0.0-1mdv remove call to additional internal libusb api, not needed
 Patch1:    argyllcms-1.0.0-libusb.patch
 # (fc) 1.0.3-2mdv fix header and str_fmt error
@@ -20,7 +20,7 @@ BuildRequires: libtiff-devel, libusb-devel
 BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
 BuildRequires: libxscrnsaver-devel
 BuildRequires: libxrandr-devel
-BuildRequires: icclib-devel
+BuildRequires: icclib-devel >= 2.11
 
 %description
 The Argyll color management system supports accurate ICC profile creation for
