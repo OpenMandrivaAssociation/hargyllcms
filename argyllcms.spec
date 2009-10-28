@@ -68,12 +68,17 @@ install -p -m 0644 libusb/19-color.fdi \
 install -d -m 0755 %{buildroot}%{_datadir}/PolicyKit/policy
 install -m 644 libusb/color-device-file.policy %{buildroot}%{_datadir}/PolicyKit/policy
 
+install -d -m 0755 %{buildroot}%{_sysconfdir}/udev/rules.d/
+sed -e 's/MODE="666"/ENV{ACL_MANAGE}="1"/g' libusb/55-Argyll.rules > %{buildroot}%{_sysconfdir}/udev/rules.d/55-Argyll.rules
+
+
 %clean
 rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/argyll
+%{_sysconfdir}/udev/rules.d/*.rules
 %{_bindir}/*
 %{_datadir}/color/argyll
 %{_datadir}/hal/fdi/policy/10osvendor/19-color.fdi
