@@ -1,18 +1,19 @@
 Name:    argyllcms
-Version: 1.0.4
-Release: %mkrel 2
+Version: 1.1.0
+Release: %mkrel 0.rc4.1
 Summary: ICC compatible color management system
+
+%define icclib_version 2.12
+%define icclib_libname  %mklibname icc 2
 
 Group:     Graphics
 License:   GPLv3 and BSD-like
 URL:       http://www.argyllcms.com/
-Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
+Source0:   http://www.argyllcms.com/Argyll_V%{version}_RC4_src.zip
 # (fc) 1.0.1-1mdv change build system to use autotools , build with system libusb and icclib (Alastair M. Robinson, Roland Mas) (Debian)
-Patch0:    Argyll_V1.0.4_autotools.patch
+Patch0:    Argyll_V1.1.0_RC3_autotools.patch
 # (fc) 1.0.0-1mdv remove call to additional internal libusb api, not needed
 Patch1:    argyllcms-1.0.0-libusb.patch
-# (fc) 1.0.3-2mdv fix header and str_fmt error
-Patch4:    argyllcms-1.0.3-header-str_fmt.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
@@ -20,7 +21,8 @@ BuildRequires: libtiff-devel, libusb-devel
 BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
 BuildRequires: libxscrnsaver-devel
 BuildRequires: libxrandr-devel
-BuildRequires: icclib-devel >= 2.11
+BuildRequires: icclib-devel >= %{icclib_version}
+Requires: %{icclib_libname} >= %{icclib_version}
 
 %description
 The Argyll color management system supports accurate ICC profile creation for
@@ -38,10 +40,9 @@ conversion. Device color gamuts can also be viewed and compared using a VRML
 viewer.
 
 %prep
-%setup -q -n Argyll_V%{version}
+%setup -q -n Argyll_V%{version}_RC4
 %patch0 -p1 -b .autotools
 %patch1 -p1 -b .libusb
-%patch4 -p1 -b .header-str_fmt
 
 #needed by patch0
 autoreconf -i
