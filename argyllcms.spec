@@ -1,6 +1,6 @@
 Name:    argyllcms
 Version: 1.1.0
-Release: %mkrel 0.rc4.1
+Release: %mkrel 0.rc4.2
 Summary: ICC compatible color management system
 
 %define icclib_version 2.12
@@ -70,7 +70,7 @@ install -d -m 0755 %{buildroot}%{_datadir}/PolicyKit/policy
 install -m 644 libusb/color-device-file.policy %{buildroot}%{_datadir}/PolicyKit/policy
 
 install -d -m 0755 %{buildroot}%{_sysconfdir}/udev/rules.d/
-sed -e 's/MODE="666"/ENV{ACL_MANAGE}="1"/g' libusb/55-Argyll.rules > %{buildroot}%{_sysconfdir}/udev/rules.d/55-Argyll.rules
+sed -e 's/MODE="666"/ENV{ACL_MANAGE}="1"/g' -e 's/SYSFS/ATTRS/g' libusb/55-Argyll.rules > %{buildroot}%{_sysconfdir}/udev/rules.d/55-Argyll.rules
 
 
 %clean
