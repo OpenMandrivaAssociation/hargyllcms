@@ -1,19 +1,21 @@
 Name:    argyllcms
 Version: 1.1.0
-Release: %mkrel 0.rc4.2
+Release: %mkrel 1
 Summary: ICC compatible color management system
 
-%define icclib_version 2.12
+%define icclib_version 2.12-1mdv
 %define icclib_libname  %mklibname icc 2
 
 Group:     Graphics
 License:   GPLv3 and BSD-like
 URL:       http://www.argyllcms.com/
-Source0:   http://www.argyllcms.com/Argyll_V%{version}_RC4_src.zip
+Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
 # (fc) 1.0.1-1mdv change build system to use autotools , build with system libusb and icclib (Alastair M. Robinson, Roland Mas) (Debian)
 Patch0:    Argyll_V1.1.0_RC3_autotools.patch
 # (fc) 1.0.0-1mdv remove call to additional internal libusb api, not needed
 Patch1:    argyllcms-1.0.0-libusb.patch
+# (fc) 1.1.0-1mdv fix crash in dispwin (upstream)
+Patch2:    argyllcms-1.1.0-crashfix.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
@@ -40,9 +42,10 @@ conversion. Device color gamuts can also be viewed and compared using a VRML
 viewer.
 
 %prep
-%setup -q -n Argyll_V%{version}_RC4
+%setup -q -n Argyll_V%{version}
 %patch0 -p1 -b .autotools
 %patch1 -p1 -b .libusb
+%patch2 -p1 -b .crashfix
 
 #needed by patch0
 autoreconf -i
@@ -62,13 +65,6 @@ rm -rf %{buildroot}
 
 %makeinstall_std
 
-install -d -m 0755 %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor
-install -p -m 0644 libusb/19-color.fdi \
-        %{buildroot}%{_datadir}/hal/fdi/policy/10osvendor/
-
-install -d -m 0755 %{buildroot}%{_datadir}/PolicyKit/policy
-install -m 644 libusb/color-device-file.policy %{buildroot}%{_datadir}/PolicyKit/policy
-
 install -d -m 0755 %{buildroot}%{_sysconfdir}/udev/rules.d/
 sed -e 's/MODE="666"/ENV{ACL_MANAGE}="1"/g' -e 's/SYSFS/ATTRS/g' libusb/55-Argyll.rules > %{buildroot}%{_sysconfdir}/udev/rules.d/55-Argyll.rules
 
@@ -82,6 +78,4 @@ rm -rf %{buildroot}
 %{_sysconfdir}/udev/rules.d/*.rules
 %{_bindir}/*
 %{_datadir}/color/argyll
-%{_datadir}/hal/fdi/policy/10osvendor/19-color.fdi
-%{_datadir}/PolicyKit/policy/color-device-file.policy
 %{_libdir}/argyll
