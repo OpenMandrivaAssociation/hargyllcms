@@ -1,6 +1,6 @@
 Name:    argyllcms
 Version: 1.1.0
-Release: %mkrel 1
+Release: %mkrel 2
 Summary: ICC compatible color management system
 
 %define icclib_version 2.12-1mdv
@@ -12,14 +12,14 @@ URL:       http://www.argyllcms.com/
 Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
 # (fc) 1.0.1-1mdv change build system to use autotools , build with system libusb and icclib (Alastair M. Robinson, Roland Mas) (Debian)
 Patch0:    Argyll_V1.1.0_RC3_autotools.patch
-# (fc) 1.0.0-1mdv remove call to additional internal libusb api, not needed
-Patch1:    argyllcms-1.0.0-libusb.patch
+# (fc) 1.1.0-1mdv use local argyllcms libusb, it has some local patches (Roland Mas) (Debian)
+Patch1:    argyllcms-1.1.0-uselocallibusb.patch
 # (fc) 1.1.0-1mdv fix crash in dispwin (upstream)
 Patch2:    argyllcms-1.1.0-crashfix.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
-BuildRequires: libtiff-devel, libusb-devel
+BuildRequires: libtiff-devel
 BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
 BuildRequires: libxscrnsaver-devel
 BuildRequires: libxrandr-devel
@@ -44,10 +44,10 @@ viewer.
 %prep
 %setup -q -n Argyll_V%{version}
 %patch0 -p1 -b .autotools
-%patch1 -p1 -b .libusb
+%patch1 -p1 -b .locallibusb
 %patch2 -p1 -b .crashfix
 
-#needed by patch0
+#needed by patches 0 & 1
 autoreconf -i
 
 %build
