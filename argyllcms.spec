@@ -1,6 +1,6 @@
 Name:    argyllcms
 Version: 1.1.0
-Release: %mkrel 2
+Release: %mkrel 3
 Summary: ICC compatible color management system
 
 %define icclib_version 2.12-1mdv
@@ -16,6 +16,11 @@ Patch0:    Argyll_V1.1.0_RC3_autotools.patch
 Patch1:    argyllcms-1.1.0-uselocallibusb.patch
 # (fc) 1.1.0-1mdv fix crash in dispwin (upstream)
 Patch2:    argyllcms-1.1.0-crashfix.patch
+# (fc) 1.1.0-3mdv rely on latest udev for ACL
+Patch3:    argyllcms-1.1.0-udev151.patch
+
+## udev >= 151 supports ACL on COLOR_MEASUREMENT_DEVICE
+Requires:  udev >= 151
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
@@ -46,6 +51,7 @@ viewer.
 %patch0 -p1 -b .autotools
 %patch1 -p1 -b .locallibusb
 %patch2 -p1 -b .crashfix
+%patch3 -p1 -b .udev151
 
 #needed by patches 0 & 1
 autoreconf -i
