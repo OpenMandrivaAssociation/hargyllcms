@@ -1,6 +1,6 @@
 Name:    argyllcms
 Version: 1.1.0
-Release: %mkrel 3
+Release: %mkrel 4
 Summary: ICC compatible color management system
 
 %define icclib_version 2.12-1mdv
