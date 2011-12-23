@@ -1,26 +1,15 @@
 Name:    argyllcms
-Version: 1.1.0
-Release: %mkrel 4
+Version: 1.3.5
+Release: %mkrel 1
 Summary: ICC compatible color management system
 
 %define icclib_version 2.12-1mdv
-%define icclib_libname  %mklibname icc 2
 
 Group:     Graphics
 License:   GPLv3 and BSD-like
-URL:       http://www.argyllcms.com/
-Source0:   http://www.argyllcms.com/Argyll_V%{version}_src.zip
-# (fc) 1.0.1-1mdv change build system to use autotools , build with system libusb and icclib (Alastair M. Robinson, Roland Mas) (Debian)
-Patch0:    Argyll_V1.1.0_RC3_autotools.patch
-# (fc) 1.1.0-1mdv use local argyllcms libusb, it has some local patches (Roland Mas) (Debian)
-Patch1:    argyllcms-1.1.0-uselocallibusb.patch
-# (fc) 1.1.0-1mdv fix crash in dispwin (upstream)
-Patch2:    argyllcms-1.1.0-crashfix.patch
-# (fc) 1.1.0-3mdv rely on latest udev for ACL
-Patch3:    argyllcms-1.1.0-udev151.patch
-
-## udev >= 151 supports ACL on COLOR_MEASUREMENT_DEVICE
-Requires:  udev >= 151
+URL:       http://gitorious.org/hargyllcms
+Source0:   http://people.freedesktop.org/~hughsient/releases/hargyllcms-%{version}.tar.xz
+Patch0:    argyllcms-1.3.5-fedora-ColorHug.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 
@@ -29,7 +18,8 @@ BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
 BuildRequires: libxscrnsaver-devel
 BuildRequires: libxrandr-devel
 BuildRequires: icclib-devel >= %{icclib_version}
-Requires: %{icclib_libname} >= %{icclib_version}
+BuildRequires: usb1.0-devel
+Requires:      udev
 
 %description
 The Argyll color management system supports accurate ICC profile creation for
@@ -47,41 +37,26 @@ conversion. Device color gamuts can also be viewed and compared using a VRML
 viewer.
 
 %prep
-%setup -q -n Argyll_V%{version}
-%patch0 -p1 -b .autotools
-%patch1 -p1 -b .locallibusb
-%patch2 -p1 -b .crashfix
-%patch3 -p1 -b .udev151
+%setup -q -n hargyllcms-%{version}
+%patch0 -p1 -b .colorhug
 
-#needed by patches 0 & 1
 autoreconf -i
 
 %build
-
-%configure2_5x
-
+%configure
 #parallel build is broken
 make
 
-%check
-make check
-
 %install
 rm -rf %{buildroot}
-
 %makeinstall_std
-
-install -d -m 0755 %{buildroot}%{_sysconfdir}/udev/rules.d/
-sed -e 's/MODE="666"/ENV{ACL_MANAGE}="1"/g' -e 's/SYSFS/ATTRS/g' libusb/55-Argyll.rules > %{buildroot}%{_sysconfdir}/udev/rules.d/55-Argyll.rules
-
 
 %clean
 rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root,-)
-%doc %{_datadir}/doc/argyll
-%{_sysconfdir}/udev/rules.d/*.rules
-%{_bindir}/*
+%defattr(0644,root,root,0755)
+%doc %{_defaultdocdir}/argyll
+%attr(0755,root,root) %{_bindir}/*
 %{_datadir}/color/argyll
-%{_libdir}/argyll
+/lib/udev/rules.d/55-Argyll.rules
