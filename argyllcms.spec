@@ -1,17 +1,20 @@
+%define major 0
+%define libname %mklibname argyll %major
+%define develname %mklibname argyll -d
+
 Name:    argyllcms
-Version: 1.3.5
+Version: 1.3.7
 Release: %mkrel 1
 Summary: ICC compatible color management system
 
 %define icclib_version 2.12-1mdv
 
 Group:     Graphics
-License:   GPLv3 and BSD-like
+License:   GPLv3 and BSD and MIT and AGPLv3
 URL:       http://gitorious.org/hargyllcms
 Source0:   http://people.freedesktop.org/~hughsient/releases/hargyllcms-%{version}.tar.xz
-Patch0:    argyllcms-1.3.5-fedora-ColorHug.patch
-
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
+Patch0:    hargyllcms-1.3.7-mdv-buildorder.patch
+Patch1:    hargyllcms-1.3.7-mdv-linkage.patch
 
 BuildRequires: libtiff-devel
 BuildRequires: libx11-devel, libxext-devel, libxxf86vm-devel, libxinerama-devel
@@ -36,14 +39,28 @@ engine available anywhere, as well as support for fast, fully accurate 16 bit
 conversion. Device color gamuts can also be viewed and compared using a VRML
 viewer.
 
+%package -n %{libname}
+Summary: Argyll CMS libraries
+Group:   System/Libraries
+
+%description -n %{libname}
+This package contains shared libraries used by Argyll CMS.
+
+%package -n %{develname}
+Summary: Argyll CMS development files
+Group:   Development/C
+
+%description -n %{develname}
+This package contains development files for Argyll CMS shared libraries.
+
 %prep
 %setup -q -n hargyllcms-%{version}
-%patch0 -p1 -b .colorhug
-
-autoreconf -i
+%patch0 -p1
+%patch1 -p1
+autoreconf
 
 %build
-%configure
+%configure --disable-static
 #parallel build is broken
 make
 
@@ -51,12 +68,15 @@ make
 rm -rf %{buildroot}
 %makeinstall_std
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(0644,root,root,0755)
 %doc %{_defaultdocdir}/argyll
 %attr(0755,root,root) %{_bindir}/*
 %{_datadir}/color/argyll
 /lib/udev/rules.d/55-Argyll.rules
+
+%files -n %{libname}
+%{_libdir}/libargyll*.so.%{major}*
+
+%files -n %{develname}
+%{_libdir}/libargyll*.so
