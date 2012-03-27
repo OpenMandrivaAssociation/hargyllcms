@@ -4,7 +4,7 @@
 
 Name:    argyllcms
 Version: 1.3.7
-Release: %mkrel 1
+Release: %mkrel 2
 Summary: ICC compatible color management system
 
 %define icclib_version 2.12-1mdv
@@ -47,8 +47,9 @@ Group:   System/Libraries
 This package contains shared libraries used by Argyll CMS.
 
 %package -n %{develname}
-Summary: Argyll CMS development files
-Group:   Development/C
+Summary:  Argyll CMS development files
+Group:    Development/C
+Requires: %{libname} = %{version}
 
 %description -n %{develname}
 This package contains development files for Argyll CMS shared libraries.
@@ -74,6 +75,7 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_bindir}/*
 %{_datadir}/color/argyll
 /lib/udev/rules.d/55-Argyll.rules
+%doc AUTHORS ChangeLog Readme.txt
 
 %files -n %{libname}
 %{_libdir}/libargyll*.so.%{major}*
