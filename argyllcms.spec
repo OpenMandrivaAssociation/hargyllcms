@@ -69,6 +69,10 @@ make
 rm -rf %{buildroot}
 %makeinstall_std
 
+%if %{mdvver} <= 201100
+rm -f %{buildroot}%{_libdir}/*.la
+%endif
+
 %files
 %defattr(0644,root,root,0755)
 %doc %{_defaultdocdir}/argyll
