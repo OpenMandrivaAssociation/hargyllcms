@@ -1,11 +1,11 @@
-%define lname	hargyllcms
-%define major	0
+%define lname hargyllcms
+%define major 0
 %define libname %mklibname argyll %{major}
 %define devname %mklibname argyll -d
 
 Summary:	ICC compatible color management system
 Name:		argyllcms
-Version:	1.4.0
+Version:	1.5.1
 Release:	1
 Group:		Graphics
 License:	GPLv3 and BSD and MIT and AGPLv3
@@ -64,8 +64,8 @@ autoreconf
 %build
 %configure2_5x \
 	--disable-static
-#parallel build is broken
-make
+#parallel build is broke
+%make -j1
 
 %install
 %makeinstall_std
