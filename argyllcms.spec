@@ -11,7 +11,7 @@ Group:		Graphics
 License:	GPLv3 and BSD and MIT and AGPLv3
 Url:		http://gitorious.org/hargyllcms
 Source0:	http://people.freedesktop.org/~hughsient/releases/%{lname}-%{version}.tar.xz
-Patch0:		hargyllcms-1.4.0-mdv-linkage.patch
+#Patch0:		hargyllcms-1.4.0-mdv-linkage.patch
 
 BuildRequires:	icclib-devel
 BuildRequires:	jpeg-devel
@@ -57,9 +57,9 @@ This package contains development files for Argyll CMS shared libraries.
 
 %prep
 %setup -qn %{lname}-%{version}
-%apply_patches
-mkdir -p m4
-autoreconf
+#apply_patches
+#mkdir -p m4
+#autoreconf
 
 %build
 %configure2_5x \
