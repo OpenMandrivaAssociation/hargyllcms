@@ -76,7 +76,6 @@ autoreconf -fi
 %doc AUTHORS ChangeLog Readme.txt
 %{_bindir}/*
 %{_datadir}/color/argyll
-/lib/udev/rules.d/55-Argyll.rules
 
 %files -n %{libname}
 %{_libdir}/libargyll*.so.%{major}*
