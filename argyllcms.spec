@@ -6,7 +6,7 @@
 Summary:	ICC compatible color management system
 Name:		argyllcms
 Version:	1.5.1
-Release:	1
+Release:	2
 Group:		Graphics
 License:	GPLv3 and BSD and MIT and AGPLv3
 Url:		http://gitorious.org/hargyllcms
