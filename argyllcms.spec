@@ -16,6 +16,7 @@ Source0:	http://people.freedesktop.org/~hughsient/releases/%{lname}-%{version}.t
 BuildRequires:	icclib-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	tiff-devel
+BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xxf86vm)
