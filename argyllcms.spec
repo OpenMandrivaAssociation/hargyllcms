@@ -2,16 +2,16 @@
 %define major 0
 %define libname %mklibname argyll %{major}
 %define devname %mklibname argyll -d
+%define libimdiname %mklibname imdi %{major}
 
 Summary:	ICC compatible color management system
 Name:		argyllcms
-Version:	1.5.1
-Release:	10
+Version:	1.8.2
+Release:	1
 Group:		Graphics
 License:	GPLv3 and BSD and MIT and AGPLv3
 Url:		http://gitorious.org/hargyllcms
 Source0:	http://people.freedesktop.org/~hughsient/releases/%{lname}-%{version}.tar.xz
-Patch0:		hargyllcms-1.4.0-mdv-linkage.patch
 
 BuildRequires:	icclib-devel
 BuildRequires:	jpeg-devel
@@ -47,10 +47,18 @@ Group:		System/Libraries
 %description -n %{libname}
 This package contains shared libraries used by Argyll CMS.
 
+%package -n %{libimdiname}
+Summary:        Argyll CMS libraries
+Group:          System/Libraries
+
+%description -n %{libimdiname}
+This package contains shared libraries used by Argyll CMS.
+
 %package -n %{devname}
 Summary:	Argyll CMS development files
 Group:		Development/C
 Requires:	%{libname} = %{version}
+Requires:	%{libimdiname} = %{version}
 
 %description -n %{devname}
 This package contains development files for Argyll CMS shared libraries.
@@ -58,12 +66,11 @@ This package contains development files for Argyll CMS shared libraries.
 %prep
 %setup -qn %{lname}-%{version}
 %apply_patches
-mkdir -p m4
-autoreconf -fi
 
 %build
-%configure2_5x \
-	--disable-static
+export CC=gcc
+export CXX=g++
+%configure
 
 #parallel build is broke
 %make -j1
@@ -80,7 +87,11 @@ autoreconf -fi
 %files -n %{libname}
 %{_libdir}/libargyll*.so.%{major}*
 
+%files -n %{libimdiname}
+%{_libdir}/libimdi*.so.%{major}*
+
 %files -n %{devname}
 %{_libdir}/libargyll*.so
+%{_libdir}/libimdi*.so
 %doc AUTHORS ChangeLog Readme.txt
 
