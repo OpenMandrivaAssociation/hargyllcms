@@ -5,7 +5,7 @@
 
 Summary:	ICC compatible color management system
 Name:		hargyllcms
-Version:	1.8.3
+Version:	1.9.2
 Release:	1
 Group:		Graphics
 License:	GPLv3 and BSD and MIT and AGPLv3
@@ -81,7 +81,6 @@ export CXX=g++
 
 %files
 %doc %{_defaultdocdir}/argyll
-%doc AUTHORS ChangeLog Readme.txt
 %{_bindir}/*
 %{_datadir}/color/argyll
 
@@ -92,6 +91,6 @@ export CXX=g++
 %{_libdir}/libimdi*.so.%{major}*
 
 %files -n %{devname}
+%doc AUTHORS Readme.txt
 %{_libdir}/libargyll*.so
 %{_libdir}/libimdi*.so
-%doc AUTHORS ChangeLog Readme.txt
