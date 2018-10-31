@@ -6,7 +6,7 @@
 Summary:	ICC compatible color management system
 Name:		hargyllcms
 Version:	1.9.2
-Release:	1
+Release:	2
 Group:		Graphics
 License:	GPLv3 and BSD and MIT and AGPLv3
 Url:		https://github.com/hughsie/hargyllcms
