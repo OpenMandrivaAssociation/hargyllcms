@@ -2,6 +2,7 @@
 %define libname %mklibname argyll %{major}
 %define devname %mklibname argyll -d
 %define libimdiname %mklibname imdi %{major}
+%define  _disable_lto 1
 
 Summary:	ICC compatible color management system
 Name:		hargyllcms
@@ -11,6 +12,7 @@ Group:		Graphics
 License:	GPLv3 and BSD and MIT and AGPLv3
 Url:		https://github.com/hughsie/hargyllcms
 Source0:	http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.xz
+Patch0:		fix-multiple-decs.patch
 
 BuildRequires:	icclib-devel
 BuildRequires:	jpeg-devel
@@ -65,16 +67,16 @@ Requires:	%{libimdiname} = %{version}
 This package contains development files for Argyll CMS shared libraries.
 
 %prep
-%setup -q
-%autopatch -p1
+
+%autosetup -p1
 
 %build
-export CC=gcc
-export CXX=g++
+# export CC=gcc
+# export CXX=g++
 %configure
 
 #parallel build is broke
-%make -j1
+%make -j1 
 
 %install
 %makeinstall_std

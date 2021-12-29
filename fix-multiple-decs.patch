@@ -1,0 +1,57 @@
+diff --git a/gamut/gamut.h b/gamut/gamut.h
+index e74f942..59766c3 100755
+--- a/gamut/gamut.h
++++ b/gamut/gamut.h
+@@ -36,7 +36,7 @@
+ #define MAXGAMN 10				/* Maximum gamut point neighbors returned */
+ #define NSLOTS 6				/* Number of maximum direction slots */
+ 
+-struct _vrml *wrl;				/* Declared in vrml.h, which may be #included after this */
++static struct _vrml *wrl;				/* Declared in vrml.h, which may be #included after this */
+ 
+ /* ------------------------------------ */
+ #define NODE_STRUCT							\
+diff --git a/spectro/inflate.c b/spectro/inflate.c
+index 55d8e65..84eafd6 100755
+--- a/spectro/inflate.c
++++ b/spectro/inflate.c
+@@ -87,7 +87,7 @@ int inflate(void);
+ /* unsigned wp;             current position in slide */
+ 
+ #define WSIZE 0x8000
+-unsigned int wp;             /* current position in slide */
++static unsigned int wp;             /* current position in slide */
+ uch slide[32768];
+ 
+ static int flush_output(unsigned int w) {
+@@ -156,7 +156,7 @@ static ush cpdext[] = {         /* Extra bits for distance codes */
+  */
+ 
+ ulg bb;                         /* bit buffer */
+-unsigned bk;                    /* bits in bit buffer */
++static unsigned bk;                    /* bits in bit buffer */
+ 
+ ush mask_bits[] = {
+     0x0000,
+@@ -210,7 +210,7 @@ int dbits = 6;          /* bits in base distance lookup table */
+ #define N_MAX 288       /* maximum number of codes in any set */
+ 
+ 
+-unsigned hufts;         /* track memory usage */
++static unsigned hufts;         /* track memory usage */
+ 
+ 
+ static int huft_build(b, n, s, d, e, t, m)
+diff --git a/spectro/vinflate.c b/spectro/vinflate.c
+index 847fa28..1237234 100755
+--- a/spectro/vinflate.c
++++ b/spectro/vinflate.c
+@@ -160,7 +160,7 @@ static ush cpdext[] = {         /* Extra bits for distance codes */
+    the stream.
+  */
+ 
+-ulg bb;                         /* bit buffer */
++static ulg bb;                         /* bit buffer */
+ unsigned bk;                    /* bits in bit buffer */
+ 
+ ush vmask_bits[] = {
