@@ -14,6 +14,11 @@ Url:		https://github.com/hughsie/hargyllcms
 Source0:	http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.xz
 Patch0:		fix-multiple-decs.patch
 
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	icclib-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	tiff-devel
